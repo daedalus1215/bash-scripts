@@ -32,7 +32,7 @@ COMMENT="${@}"
 PASSWORD=$(date +%s%N | sha256sum | head -c48)
 
 # Create the user with the password
-useradd -c "${COMMENT}" -m ${USER_NAME}
+useradd -c "${COMMENT}" -m ${USER_NAME} &> /dev/null
 
 # Check to see if the useradd command succeeded.
 # We do not want to tell the user that an account was created when it hasnt been.
@@ -43,7 +43,8 @@ then
 fi
 
 # Set the password.
-echo ${PASSWORD} | passwd --stdin ${USER_NAME}
+echo ${PASSWORD} | passwd --stdin ${USER_NAME} &> /dev/null
+passwd -e ${USER_NAME} &> /dev/null
 
 # Check to see if the passwd command succeeded.
 if [[ "${?}" -ne 0 ]]
